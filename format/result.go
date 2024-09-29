@@ -1,5 +1,5 @@
 package format
 
-func Result(expression string, result string) string {
+func Result(expression string, result float64) string {
 	return ""
 }

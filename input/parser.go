@@ -2,13 +2,43 @@ package input
 
 import (
 	"github.com/halfnibble/learn-tdd-go/calculator"
+	"github.com/halfnibble/learn-tdd-go/format"
 )
 
-type Parser struct {
-	engine    *calculator.Engine
-	validator *Validator
+// OperationProcessor is the interface for processing mathematical expressions
+type OperationProcessor interface {
+	ProcessOperation(operation *calculator.Operation) (*string, error)
 }
 
-func (p *Parser) ProcessExpression(expression string) (*string, error) {
-	return nil, nil
+// ValidationHelper is the interface for input validation
+type ValidationHelper interface {
+	CheckInput(operator string, operands []float64) error
+}
+
+// Parser is responsible for converting input to the mathematical operations
+type Parser struct {
+	engine    OperationProcessor
+	validator ValidationHelper
+}
+
+func NewParser(engine OperationProcessor, validator ValidationHelper) *Parser {
+	return &Parser{
+		engine:    engine,
+		validator: validator,
+	}
+}
+
+func (p *Parser) ProcessExpression(expr string) (*string, error) {
+	operation, err := p.getOperation(expr)
+	if err != nil {
+		return nil, format.Error(expr, err)
+	}
+	return p.engine.ProcessOperation(operation)
+}
+
+func (p *Parser) getOperation(expr string) (*calculator.Operation, error) {
+
+	return &calculator.Operation{
+		Expression: expr,
+	}, nil
 }
